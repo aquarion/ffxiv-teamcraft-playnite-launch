@@ -6,12 +6,12 @@ if (![System.IO.File]::Exists($appexe)){
 # Wait for the launcher to launch (-EA 0 means don't throw an exception when this fails)
 $pleaseWait = 0 # How many times we've looped though waiting
 $launcherLoopWaitTime = 3 # How long to wait between checks
-$pleaseWaitPatienceSeconds = 300 # How long to wait before giving up (in seconds)
+$pleaseWaitPatienceSeconds = 120 # How long to wait before giving up (in seconds)
 
 $pleaseWaitPatience = $pleaseWaitPatienceSeconds/$launcherLoopWaitTime # How many times to loop before giving up (in loops)
 
 
-while (!($launcher = Get-Process ffxivlauncher64 -EA 0) -and ($pleaseWait -lt $pleaseWaitPatience ) ){
+while (!($launcher = Get-Process $gameExecutable -EA 0) -and ($pleaseWait -lt $pleaseWaitPatience ) ){
       Start-Sleep -Seconds $launcherLoopWaitTime
       $pleaseWait++
 }
@@ -21,9 +21,6 @@ if ($pleaseWait -ge $pleaseWaitPatience){
    $PlayniteApi.Dialogs.ShowErrorMessage("Got bored waiting for launcher", "FFXIV Teamcraft Launcher")
    Exit 200
 }
-
-# Wait for the launcher to die.
-Wait-Process -Id $launcher.id
 
 # ... then give the game some time to get its act together
 Start-Sleep -Seconds 10
