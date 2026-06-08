@@ -1,0 +1,51 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/python-poetry/poetry
+    rev: 2.3.4
+    hooks:
+      - id: poetry-check
+        args: [--directory, app, --lock]
+      - id: poetry-lock
+        args: [--directory, app]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.11
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: checkov
+        name: checkov security scan
+        language: python
+        entry: checkov
+        args: [--config-file, .checkov.yaml, --directory, .]
+        pass_filenames: false
+        additional_dependencies: ["checkov==3.2.517"]
+
+      # - id: gh-aw-stale
+      #   name: Check agentic workflow lock files are up to date
+      #   entry: bash .github/scripts/check-aw-stale.sh
+      #   language: system
+      #   files: ^\.github/workflows/.*\.md$
+      #   pass_filenames: true
+
+      # Check powershell scripts with PSScriptAnalyzer
+      - id: PSScriptAnalyzer
+        name: PSScriptAnalyzer
+        description: Run PSScriptAnalyzer on commit
+        language: script
+        entry: ./bin/Invoke-PSSAPreCommitHook.ps1
