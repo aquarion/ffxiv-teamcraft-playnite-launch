@@ -155,6 +155,15 @@ def main():
         help="Seconds to retry connecting to XIVLauncher (default: 60)",
     )
     parser.add_argument(
+        "--interval",
+        type=int,
+        default=5,
+        help="Seconds between retry attempts when connecting to XIVLauncher (default: 5)",
+    )
+    parser.add_argument(
+        "--quiet", action="store_true", help="Suppress non-error output (overrides other flags)"
+    )
+    parser.add_argument(
         "otp_code",
         nargs="?",
         help="Literal OTP code to send (use with --code)",
@@ -223,11 +232,12 @@ def main():
             digits=cfg.get("digits", 6),
         )
 
-    print(f"OTP: {otp}")
+    if not args.quiet:
+        print(f"OTP: {otp}")
 
     ips = cfg.get("ips", ["127.0.0.1"])
     for ip in ips:
-        send_to_xivlauncher(ip, otp, timeout=args.timeout)
+        send_to_xivlauncher(ip, otp, timeout=args.timeout, interval=args.interval)
 
     if args.quit_after_send:
         sys.exit(0)
