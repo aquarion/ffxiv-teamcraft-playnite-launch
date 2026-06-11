@@ -15,7 +15,7 @@ import urllib.parse
 import urllib.request
 import urllib.error
 
-APP_NAME="xvi-authenticator"
+APP_NAME = "xvi-authenticator"
 CONFIG_SECTION = "xvi-authenticator"
 INT_KEYS = ("digits", "period")
 
@@ -96,7 +96,9 @@ def generate_totp(
     return str(code % (10**digits)).zfill(digits)
 
 
-def send_to_xivlauncher(ip: str, otp: str, timeout: int = 60, interval: int = 5) -> bool:
+def send_to_xivlauncher(
+    ip: str, otp: str, timeout: int = 60, interval: int = 5
+) -> bool:
     """Send OTP to XIVLauncher, retrying until timeout if connection is refused."""
     url = f"http://{ip}:4646/ffxivlauncher/{otp}"
     deadline = time.time() + timeout
@@ -161,7 +163,9 @@ def main():
         help="Seconds between retry attempts when connecting to XIVLauncher (default: 5)",
     )
     parser.add_argument(
-        "--quiet", action="store_true", help="Suppress non-error output (overrides other flags)"
+        "--quiet",
+        action="store_true",
+        help="Suppress non-error output (overrides other flags)",
     )
     parser.add_argument(
         "otp_code",
